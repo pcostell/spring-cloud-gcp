@@ -202,6 +202,30 @@ class GcpDatastoreAutoConfigurationTests {
             });
   }
 
+  @Test
+  void testPreviousTransactionRetryEnabledDefaultToTrue() {
+    this.contextRunner.run(
+        context -> {
+          DatastoreMappingContext datastoreMappingContext =
+              context.getBean(DatastoreMappingContext.class);
+          assertThat(datastoreMappingContext).isNotNull();
+          assertThat(datastoreMappingContext.isPreviousTransactionRetryEnabled()).isTrue();
+        });
+  }
+
+  @Test
+  void testPreviousTransactionRetryEnabledValueSetToFalse() {
+    this.contextRunner
+        .withPropertyValues("spring.cloud.gcp.datastore.previous-transaction-retry-enabled=false")
+        .run(
+            context -> {
+              DatastoreMappingContext datastoreMappingContext =
+                  context.getBean(DatastoreMappingContext.class);
+              assertThat(datastoreMappingContext).isNotNull();
+              assertThat(datastoreMappingContext.isPreviousTransactionRetryEnabled()).isFalse();
+            });
+  }
+
   private Datastore getDatastoreBean(ApplicationContext context) {
     return (Datastore)
         ((Supplier)
